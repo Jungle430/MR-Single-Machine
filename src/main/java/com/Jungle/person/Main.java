@@ -32,10 +32,9 @@ public class Main {
     }
 
     private static void MapReduce(MapFunction map_f, ReduceFunction reduce_f, String file_name) throws IOException {
-        ClassLoader clr = Main.class.getClassLoader();
         List<KeyValue> intermediate = new ArrayList<>();
         for (String filename : MapReduceConfig.INPUT_FILES) {
-            try (InputStream inputStream = clr.getResourceAsStream(filename)) {
+            try (InputStream inputStream = Main.class.getClassLoader().getResourceAsStream(filename)) {
                 if (inputStream == null) {
                     log.error("{} not found", filename);
                     continue;

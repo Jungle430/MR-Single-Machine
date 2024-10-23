@@ -14,7 +14,7 @@ public class MapReduceConfig {
 
     static {
         INPUT_FILES = Arrays.stream(PropertiesUtil.getProperty("mapreduce.files.input").split(",")).toList();
-        N_MAP = Integer.parseInt(PropertiesUtil.getProperty("mapreduce.map.num"));
+        N_MAP = INPUT_FILES.size();
         N_REDUCE = Integer.parseInt(PropertiesUtil.getProperty("mapreduce.reduce.num"));
     }
 }
