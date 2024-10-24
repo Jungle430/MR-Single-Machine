@@ -1,12 +1,10 @@
 package com.Jungle.person.util;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.IOException;
 import java.util.Properties;
 
-@Slf4j
-public class PropertiesUtil {
+
+public final class PropertiesUtil {
     private static final Properties prop;
 
     static {
@@ -14,7 +12,6 @@ public class PropertiesUtil {
         try {
             prop.load(PropertiesUtil.class.getClassLoader().getResourceAsStream("application.properties"));
         } catch (IOException e) {
-            log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
     }

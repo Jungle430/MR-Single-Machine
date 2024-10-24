@@ -1,12 +1,10 @@
 import com.Jungle.person.models.KeyValue;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
 public class KeyValueJsonTest {
     private static final int TEST_TO_JSON_METHOD_COUNT = 200;
 
