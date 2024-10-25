@@ -6,6 +6,9 @@ import com.Jungle.person.tools.MapFunction;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @author Jungle
+ */
 public class WcMap implements MapFunction {
     @Override
     public List<KeyValue> MapF(String key_, String value) {

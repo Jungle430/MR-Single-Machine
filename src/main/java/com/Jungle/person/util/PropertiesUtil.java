@@ -3,7 +3,9 @@ package com.Jungle.person.util;
 import java.io.IOException;
 import java.util.Properties;
 
-
+/**
+ * @author Jungle
+ */
 public final class PropertiesUtil {
     private static final Properties prop;
 

@@ -7,6 +7,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author Jungle
+ */
 public class IndexerMap implements MapFunction {
     @Override
     public List<KeyValue> MapF(String key, String value) {

@@ -4,6 +4,7 @@ package com.Jungle.person.tools.impl;
 import com.Jungle.person.models.KeyValue;
 import com.Jungle.person.tools.MapFunction;
 import com.Jungle.person.tools.Worker;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -11,16 +12,18 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
+import com.Jungle.person.config.MapReduceConfig;
+
+/**
+ * @author Jungle
+ */
 @Slf4j
+@Getter
 public class MapWorker implements Worker {
-    private static final String INPUT_FILE_DEFAULT_NAME_PREFIX = "inputFile-";
-
-    private static final String INTERMEDIATE_FILE_DEFAULT_NAME_PREFIX = "intermediateFile-";
-
     private final int id;
 
     private final MapFunction mapFunction;
@@ -55,37 +58,27 @@ public class MapWorker implements Worker {
         return distributedKva;
     }
 
-    public MapWorker(int id, MapFunction mapFunction, int reduceWorkerCount) {
+    public MapWorker(int id, MapFunction mapFunction, int reduceWorkerCount, String inputFileName, String intermediateFileNamePrefix) {
         this.id = id;
-        this.mapFunction = mapFunction;
+        this.mapFunction = Objects.requireNonNull(mapFunction);
         this.reduceWorkerCount = reduceWorkerCount;
-        this.inputFileName = String.format("%s%d", INPUT_FILE_DEFAULT_NAME_PREFIX, id);
+        this.inputFileName = Optional
+                .ofNullable(inputFileName)
+                .orElseGet(() -> String.format("%s%d", MapReduceConfig.INPUT_FILE_DEFAULT_NAME_PREFIX, id));
         if (resourceFileNotExists(inputFileName)) {
             throw new IllegalArgumentException("Resource file " + inputFileName + " does not exist");
         }
-        this.intermediateFileNamePrefix = String.format("%s%d-", INTERMEDIATE_FILE_DEFAULT_NAME_PREFIX, id);
+        this.intermediateFileNamePrefix = Optional
+                .ofNullable(intermediateFileNamePrefix)
+                .orElseGet(() -> String.format("%s%d-", MapReduceConfig.INTERMEDIATE_FILE_DEFAULT_NAME_PREFIX, id));
+    }
+
+    public MapWorker(int id, MapFunction mapFunction, int reduceWorkerCount) {
+        this(id, mapFunction, reduceWorkerCount, null, null);
     }
 
     public MapWorker(int id, MapFunction mapFunction, int reduceWorkerCount, String inputFileName) {
-        this.id = id;
-        this.mapFunction = mapFunction;
-        this.reduceWorkerCount = reduceWorkerCount;
-        this.inputFileName = inputFileName;
-        if (resourceFileNotExists(inputFileName)) {
-            throw new IllegalArgumentException("Resource file " + inputFileName + " does not exist");
-        }
-        this.intermediateFileNamePrefix = String.format("%s%d-", INTERMEDIATE_FILE_DEFAULT_NAME_PREFIX, id);
-    }
-
-    public MapWorker(int id, MapFunction mapFunction, int reduceWorkerCount, String inputFileName, String intermediateFileNamePrefix) {
-        this.id = id;
-        this.mapFunction = mapFunction;
-        this.reduceWorkerCount = reduceWorkerCount;
-        this.inputFileName = inputFileName;
-        if (resourceFileNotExists(inputFileName)) {
-            throw new IllegalArgumentException("Resource file " + inputFileName + " does not exist");
-        }
-        this.intermediateFileNamePrefix = intermediateFileNamePrefix;
+        this(id, mapFunction, reduceWorkerCount, inputFileName, null);
     }
 
     @Override
@@ -100,9 +93,9 @@ public class MapWorker implements Worker {
     }
 
     @Override
-    public Future<Boolean> work() {
+    public CompletableFuture<Boolean> work() {
         return CompletableFuture.supplyAsync(() -> {
-            log.info("map task:{}", this);
+            log.info("start map task:{}", this);
             List<KeyValue> kva;
             try (InputStream inputStream = Optional
                     .ofNullable(
@@ -119,19 +112,22 @@ public class MapWorker implements Worker {
             }
 
             List<List<KeyValue>> distributedKva = distributeKVa(kva);
-            List<String> createdFiles = new ArrayList<>();
+            List<String> createdFiles = new ArrayList<>(reduceWorkerCount);
             boolean success = true;
+
+            String outputFileName = null;
             try {
                 for (int i = 0; i < reduceWorkerCount; i++) {
-                    try (OutputStream outputStream = new FileOutputStream(intermediateFileNamePrefix + i)) {
-                        createdFiles.add(intermediateFileNamePrefix + i);
+                    outputFileName = MapReduceConfig.withMapWorkerTargetFolderPrefix(String.format("%s%d", intermediateFileNamePrefix, i));
+                    try (OutputStream outputStream = new FileOutputStream(outputFileName)) {
+                        createdFiles.add(outputFileName);
                         for (KeyValue kv : distributedKva.get(i)) {
-                            outputStream.write(kv.toJson().getBytes(StandardCharsets.UTF_8));
+                            outputStream.write(kv.toJsonLine().getBytes(StandardCharsets.UTF_8));
                         }
                     }
                 }
             } catch (IOException e) {
-                log.error("process intermediate file {} failed {}", inputFileName, e.getMessage());
+                log.error("process intermediate file {} failed {}", outputFileName, e.getMessage());
                 success = false;
             }
 

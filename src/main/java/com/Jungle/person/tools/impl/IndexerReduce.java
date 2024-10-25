@@ -5,6 +5,9 @@ import com.Jungle.person.tools.ReduceFunction;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * @author Jungle
+ */
 public class IndexerReduce implements ReduceFunction {
     @Override
     public String ReduceF(String key_, List<String> value) {

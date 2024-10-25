@@ -3,6 +3,11 @@ package com.Jungle.person.models;
 
 import com.Jungle.person.util.GsonUtil;
 
+/**
+ * @param key
+ * @param value
+ * @author Jungle
+ */
 public record KeyValue(String key, String value) implements Comparable<KeyValue> {
     public String toJson() {
         return GsonUtil.beanToJson(this);

@@ -1,7 +1,10 @@
 package com.Jungle.person.tools;
 
-import java.util.concurrent.Future;
+import java.util.concurrent.CompletableFuture;
 
+/**
+ * @author Jungle
+ */
 public interface Worker {
-    Future<Boolean> work();
+    CompletableFuture<Boolean> work();
 }

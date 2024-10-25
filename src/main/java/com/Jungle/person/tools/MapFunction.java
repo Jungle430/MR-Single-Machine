@@ -4,6 +4,9 @@ import com.Jungle.person.models.KeyValue;
 
 import java.util.List;
 
+/**
+ * @author Jungle
+ */
 @FunctionalInterface
 public interface MapFunction {
     List<KeyValue> MapF(String key, String value);
