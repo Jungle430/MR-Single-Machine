@@ -1,11 +1,14 @@
 import com.Jungle.person.models.KeyValue;
 import com.Jungle.person.util.GsonUtil;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Jungle
+ */
 public class KeyValueJsonTest {
     private static final int TEST_TO_JSON_METHOD_COUNT = 200;
 
@@ -20,7 +23,7 @@ public class KeyValueJsonTest {
         }
 
         for (int i = 0; i < TEST_TO_JSON_METHOD_COUNT; i++) {
-            Assert.assertEquals(keyValues.get(i).toJson(), jsonKVs.get(i));
+            Assertions.assertEquals(keyValues.get(i).toJson(), jsonKVs.get(i));
         }
     }
 
@@ -35,7 +38,7 @@ public class KeyValueJsonTest {
         }
 
         for (int i = 0; i < TEST_TO_JSON_METHOD_COUNT; i++) {
-            Assert.assertEquals(keyValues.get(i).toJsonLine(), jsonKVs.get(i) + '\n');
+            Assertions.assertEquals(keyValues.get(i).toJsonLine(), jsonKVs.get(i) + '\n');
         }
     }
 
@@ -50,7 +53,7 @@ public class KeyValueJsonTest {
         }
 
         for (int i = 0; i < TEST_TO_JSON_METHOD_COUNT; i++) {
-            Assert.assertEquals(GsonUtil.beanToJson(keyValues.get(i)), jsonKVs.get(i));
+            Assertions.assertEquals(GsonUtil.beanToJson(keyValues.get(i)), jsonKVs.get(i));
         }
     }
 
@@ -67,11 +70,11 @@ public class KeyValueJsonTest {
         }
 
         for (int i = 0; i < TEST_TO_JSON_METHOD_COUNT; i++) {
-            Assert.assertEquals(keyValues.get(i), GsonUtil.jsonToBean(jsonKVs.get(i), KeyValue.class));
+            Assertions.assertEquals(keyValues.get(i), GsonUtil.jsonToBean(jsonKVs.get(i), KeyValue.class));
         }
 
         for (int i = 0; i < TEST_TO_JSON_METHOD_COUNT; i++) {
-            Assert.assertEquals(keyValues.get(i), GsonUtil.jsonToBean(jsonKVsWithLine.get(i), KeyValue.class));
+            Assertions.assertEquals(keyValues.get(i), GsonUtil.jsonToBean(jsonKVsWithLine.get(i), KeyValue.class));
         }
     }
 }

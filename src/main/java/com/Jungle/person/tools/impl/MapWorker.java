@@ -70,7 +70,8 @@ public class MapWorker implements Worker {
         }
         this.intermediateFileNamePrefix = Optional
                 .ofNullable(intermediateFileNamePrefix)
-                .orElseGet(() -> String.format("%s%d-", MapReduceConfig.INTERMEDIATE_FILE_DEFAULT_NAME_PREFIX, id));
+                .map(s -> String.format("%s-%d-", s, id))
+                .orElseGet(() -> String.format("%s-%d-", MapReduceConfig.INTERMEDIATE_FILE_DEFAULT_NAME_PREFIX, id));
     }
 
     public MapWorker(int id, MapFunction mapFunction, int reduceWorkerCount) {

@@ -16,17 +16,20 @@ public final class MapReduceConfig {
 
     public static final int N_REDUCE;
 
+    public static final Boolean MAPREDUCE_TEST;
+
     static {
         INPUT_FILES = Arrays.stream(PropertiesUtil.getProperty("mapreduce.files.input").split(",")).toList();
         N_MAP = INPUT_FILES.size();
         N_REDUCE = Integer.parseInt(PropertiesUtil.getProperty("mapreduce.reduce.num"));
+        MAPREDUCE_TEST = Boolean.valueOf(PropertiesUtil.getProperty("mapreduce.test"));
     }
 
-    public static final String INPUT_FILE_DEFAULT_NAME_PREFIX = "inputFile-";
+    public static final String INPUT_FILE_DEFAULT_NAME_PREFIX = "inputFile";
 
-    public static final String INTERMEDIATE_FILE_DEFAULT_NAME_PREFIX = "intermediateFile-";
+    public static final String INTERMEDIATE_FILE_DEFAULT_NAME_PREFIX = "intermediateFile";
 
-    public static final String OUTPUT_FILE_DEFAULT_NAME_PREFIX = "mr-out-";
+    public static final String OUTPUT_FILE_DEFAULT_NAME_PREFIX = "mr-out";
 
     public static String withMapWorkerTargetFolderPrefix(String fileName) {
         return String.format("%s-%s", MapWorker.class.getProtectionDomain().getCodeSource().getLocation().getPath(), fileName);

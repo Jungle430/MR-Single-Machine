@@ -34,7 +34,7 @@ public class ReduceWorker implements Worker {
     private final String outputFileNamePrefix;
 
     private String getIntermediateFileName(int mapWorkerId) {
-        return String.format("%s%d-%d", intermediateFileNamePrefix, mapWorkerId, id);
+        return String.format("%s-%d-%d", intermediateFileNamePrefix, mapWorkerId, id);
     }
 
     private void checkIntermediateFiles() throws IllegalArgumentException {
@@ -61,7 +61,8 @@ public class ReduceWorker implements Worker {
                 .orElse(MapReduceConfig.INTERMEDIATE_FILE_DEFAULT_NAME_PREFIX);
         this.outputFileNamePrefix = Optional
                 .ofNullable(outputFileNamePrefix)
-                .orElseGet(() -> String.format("%s%d", MapReduceConfig.OUTPUT_FILE_DEFAULT_NAME_PREFIX, id));
+                .map(s -> String.format("%s-%d", intermediateFileNamePrefix, id))
+                .orElseGet(() -> String.format("%s-%d", MapReduceConfig.OUTPUT_FILE_DEFAULT_NAME_PREFIX, id));
         checkIntermediateFiles();
     }
 

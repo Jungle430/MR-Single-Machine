@@ -7,16 +7,14 @@ import com.Jungle.person.tools.impl.WcMap;
 import com.Jungle.person.tools.impl.WcReduce;
 import com.Jungle.person.util.MapReduceUtil;
 
-import java.util.concurrent.ExecutionException;
-
 /**
  * @author Jungle
  */
 public class Main {
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
+    public static void main(String[] args) {
         MapReduceUtil.MapReduce(MapReduceConfig.INPUT_FILES, new WcMap(), new WcReduce(), "WC", "WC");
-        MapReduceUtil.MapReduce(MapReduceConfig.INPUT_FILES, new IndexerMap(), new IndexerReduce(), "Indexer", "Indexer");
+        MapReduceUtil.MapReduce(MapReduceConfig.INPUT_FILES, new IndexerMap(), new IndexerReduce());
     }
 
 }
